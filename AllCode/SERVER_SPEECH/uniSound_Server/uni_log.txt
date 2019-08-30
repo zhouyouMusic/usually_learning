@@ -1,0 +1,5 @@
+Jan 19 12:28:26.007	ERRO - ASR-JNI	asrclient: stop error = -91738
+Jan 19 14:21:05.451	ERRO - ASR-JNI	asrclient: stop error = -91738
+Jan 19 14:24:08.140	ERRO - ASR-JNI	asrclient: stop error = -91738
+Jan 26 09:35:36.776	ERRO - ASR-JNI	asrclient: stop error = -91738
+Jan 26 09:39:25.416	ERRO - ASR-JNI	asrclient: stop error = -91738

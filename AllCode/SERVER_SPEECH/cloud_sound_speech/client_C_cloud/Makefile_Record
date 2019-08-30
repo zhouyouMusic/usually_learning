@@ -1,0 +1,24 @@
+MIPS64CC=mips64el-linux-android-gcc
+ARMCC=arm-linux-androideabi-gcc
+AARCH64CC=aarch64-linux-android-gcc
+MIPSCC=mipsel-linux-android-gcc
+I686CC=i686-linux-android-gcc
+X64CC=x86_64-linux-android-gcc
+
+BASE_PATH=/opt/android_ndk_r14-linux/android-ndk-r14
+
+CFLAGS=-O3 -mcpu=cortex-a8 -mtune=cortex-a8 -mfloat-abi=softfp -mfpu=neon -pie -fPIE -D__ARM_ARCH_7__  --sysroot=${BASE_PATH}/platforms/android-19/arch-arm -D_ANDROID_
+
+CLINK=-L ${BASE_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a -lgnustl_static -lc -lm  -lgcc #-lstlport#-Dgnustl_static  #-lc -O3 -lm -fPIC -Wall -nostdlib -lgcc #-D_ANDROID_
+
+CINCLUDE=-I ${BASE_PATH}/platforms/android-19/arch-arm/usr/include -I ${BASE_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include -I ${BASE_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a/include -I ${BASE_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a -I.
+
+
+play:
+	${ARMCC} ${CFLAGS} myrecord_android.c record_play.c -o play ${CLINK} -L. -ltinyalsa  ${CINCLUDE} -I .
+
+
+clean:
+	rm play
+
+

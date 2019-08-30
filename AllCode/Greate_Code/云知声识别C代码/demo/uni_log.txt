@@ -1,0 +1,4 @@
+Nov 17 16:18:36.267	ERRO - ASR-JNI	asrclient: resume error = -91742
+Nov 17 16:18:37.355	ERRO - ASR-JNI	asrclient: resume error = -91742
+Nov 17 16:18:39.101	ERRO - ASR-JNI	asrclient: resume error = -91742
+Nov 17 16:18:39.190	ERRO - ASR-JNI	asrclient: resume error = -91742

@@ -1,0 +1,213 @@
+ #include<stdio.h>
+ #include<stdint.h>
+ #include<sys/mman.h>
+ #include<stdlib.h>
+ #include<sys/stat.h>
+ #include<fcntl.h>
+ #include<linux/kernel.h>
+ #include<linux/errno.h>
+ #include<unistd.h>
+ #include<string.h>
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
+#include <netdb.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <paths.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <string.h>
+#include <libgen.h> 
+#include <poll.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+# include <sys/sysmacros.h>
+#include <sys/wait.h>
+#include <termios.h>
+#include <time.h>
+#include <sys/param.h>
+#include <pwd.h>
+#include <grp.h>
+#include <shadow.h>
+#include <mntent.h>
+#include <sys/statfs.h>
+#include <utmpx.h>
+#include <utmp.h>
+#include <utmp.h>
+#include <utmpx.h>
+#include <locale.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+
+#define FAST_FUNC __attribute__((regparm(3),stdcall))
+ 
+ static unsigned long long handle_errors(unsigned long long v, char **endp)
+ {
+	 char next_ch = **endp;
+ 
+	 /* errno is already set to ERANGE by strtoXXX if value overflowed */
+	 if (next_ch) {
+		 /* "1234abcg" or out-of-range? */
+			 return -1;
+		 /* good number, just suspicious terminator */
+	 }
+	 return v;
+ }
+ 
+ 
+ unsigned long long FAST_FUNC bb_strtoull(const char *arg, char **endp, int base)
+ {
+	 unsigned long long v;
+	 char *endptr;
+ 
+	 if (!endp) endp = &endptr;
+	 *endp = (char*) arg;
+ 
+	 /* strtoul("  -4200000000") returns 94967296, errno 0 (!) */
+	 /* I don't think that this is right. Preventing this... */
+ 
+	 /* not 100% correct for lib func, but convenient for the caller */
+	 v = strtoull(arg, endp, base);
+	 return handle_errors(v, endp);
+ }
+
+int FAST_FUNC xopen3(const char *pathname, int flags, int mode)
+{
+	int ret;
+
+	ret = open(pathname, flags, mode);
+	if (ret < 0) {
+		printf("can't open '%s'", pathname);
+	}
+	return ret;
+}
+
+ 
+ int FAST_FUNC xopen(const char *pathname, int flags)
+ {
+	 return xopen3(pathname, flags, 0666);
+ }
+//#define __attribute__(x)
+#define UNUSED_PARAM __attribute__ ((__unused__))
+int main(int argc UNUSED_PARAM, char **argv)
+{
+	void *map_base, *virt_addr;
+	uint64_t read_result;
+	uint64_t writeval = writeval; /* for compiler */
+	off_t target;
+	unsigned page_size, mapped_size, offset_in_page;
+	int fd;
+	unsigned width = 8 * sizeof(int);
+
+	/* devmem ADDRESS [WIDTH [VALUE]] */
+// TODO: options?
+// -r: read and output only the value in hex, with 0x prefix
+// -w: write only, no reads before or after, and no output
+// or make this behavior default?
+// Let's try this and see how users react.
+
+	/* ADDRESS */
+	if (!argv[1])
+		return -1;
+
+	target = bb_strtoull(argv[1], NULL, 0); /* allows hex, oct etc */
+	if (argv[3])
+			writeval = bb_strtoull(argv[3], NULL, 0);
+	/* WIDTH */
+	width = 32;
+
+	printf("target	 %x \n",target);
+	fd = xopen("/dev/mem", argv[3] ? (O_RDWR | O_SYNC) : (O_RDONLY | O_SYNC));
+	mapped_size = page_size = getpagesize();
+	offset_in_page = (unsigned)target & (page_size - 1);
+	if (offset_in_page + width > page_size) {
+		/* This access spans pages.
+		 * Must map two pages to make it possible: */
+		mapped_size *= 2;
+	}
+	
+	map_base = mmap(NULL,
+			mapped_size,
+			argv[3] ? (PROT_READ | PROT_WRITE) : PROT_READ,
+			MAP_SHARED,
+			fd,
+			target & ~(off_t)(page_size - 1));
+	if (map_base == MAP_FAILED)
+		printf("mmap failed");
+
+//	printf("Memory mapped at address %p.\n", map_base);
+
+	virt_addr = (char*)map_base + offset_in_page;
+
+	printf("argv value	%s\n",argv[3]);
+	if (!argv[3]) {
+		printf("Switch not null\n");
+		switch (width) {
+		case 8:
+			read_result = *(volatile uint8_t*)virt_addr;
+			break;
+		case 16:
+			read_result = *(volatile uint16_t*)virt_addr;
+			break;
+		case 32:
+			read_result = *(volatile uint32_t*)virt_addr;
+			break;
+		case 64:
+			read_result = *(volatile uint64_t*)virt_addr;
+			break;
+		default:
+			break;
+		}
+//		printf("Value at address 0x%"OFF_FMT"X (%p): 0x%llX\n",
+//			target, virt_addr,
+//			(unsigned long long)read_result);
+		/* Zero-padded output shows the width of access just done */
+		printf("0x%0*llX\n", (width >> 2), (unsigned long long)read_result);
+	} else {
+		printf("Switch null\n");
+		switch (width) {
+		case 8:
+			*(volatile uint8_t*)virt_addr = writeval;
+//			read_result = *(volatile uint8_t*)virt_addr;
+			break;
+		case 16:
+			*(volatile uint16_t*)virt_addr = writeval;
+//			read_result = *(volatile uint16_t*)virt_addr;
+			break;
+		case 32:
+			*(volatile uint32_t*)virt_addr = writeval;
+//			read_result = *(volatile uint32_t*)virt_addr;
+			break;
+		case 64:
+			*(volatile uint64_t*)virt_addr = writeval;
+//			read_result = *(volatile uint64_t*)virt_addr;
+			break;
+		default:
+			break;
+		}
+//		printf("Written 0x%llX; readback 0x%llX\n",
+//				(unsigned long long)writeval,
+//				(unsigned long long)read_result);
+	}
+
+
+		if (munmap(map_base, mapped_size) == -1)
+			printf("munmap");
+		close(fd);
+
+	return 0;
+}
+

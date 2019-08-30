@@ -1,0 +1,50 @@
+ctrl_interface=/data/misc/wifi/sockets
+disable_scan_offload=1
+driver_param=use_p2p_group_interface=1
+update_config=1
+device_name=msm8974sfo_lte
+manufacturer=smartisan
+model_name=SM705
+model_number=SM705
+serial_number=a51d48a2
+device_type=10-0050F204-5
+config_methods=physical_display virtual_push_button
+p2p_disabled=1
+p2p_no_group_iface=1
+
+network={
+	ssid="2205"
+	scan_ssid=1
+	proto=WPA RSN
+	key_mgmt=WPA-PSK WPA-EAP
+	psk=(VDW*@+D,:
+	pairwise=CCMP TKIP
+	group=CCMP TKIP
+	auth_alg=OPEN
+	priority=2
+	connectSuccess=1
+	autoConnect=1
+}
+
+network={
+	ssid="Tenda_4D09F8"
+	key_mgmt=WPA-PSK
+	psk=(VDW*@+D,:ZA-R<LU
+	priority=4
+	connectSuccess=1
+	autoConnect=1
+}
+
+network={
+	ssid="huwen24"
+	scan_ssid=1
+	proto=WPA RSN
+	key_mgmt=WPA-PSK WPA-EAP
+	psk=(VDW*@+D,:ZA
+	pairwise=CCMP TKIP
+	group=CCMP TKIP
+	auth_alg=OPEN
+	priority=5
+	connectSuccess=1
+	autoConnect=1
+}

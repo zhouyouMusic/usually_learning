@@ -1,0 +1,6 @@
+all:
+	gcc -g -fno-stack-protector src/*.c  src/*.so  -I include/ -L curl/lib/ -lcurl  -L lib/ -lvoice_pc -L lib/ -lvwkasemantic -lasound  -lm -lpthread -lmad_pc -L lib/ -lspeex_pc -o json 
+
+
+clean:
+	rm json
