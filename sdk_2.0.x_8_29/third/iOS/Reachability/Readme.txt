@@ -1,0 +1,1 @@
+为避免第三库冲突，将类名由Reachability改为AGNReachability

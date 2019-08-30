@@ -1,0 +1,2 @@
+1.将本jni文件夹复制到opus-1.2.1目录下，执行android-ndk/ndk-build即可生成android平台各个cpu架构libopus文件
+2.libs为已经编译好的libopus

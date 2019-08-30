@@ -1,0 +1,60 @@
+CC 	= gcc
+CXX = g++
+STRIP = strip
+CFLAGS  := -D CJSON_HIDE_SYMBOLS -D SKEGN_IMPLEMENTION -D _GNU_SOURCE -D __LINUX__ -D MG_WEBSOCKET_PING_INTERVAL_SECONDS=5 -std=c99 -O2 -fPIE -fPIC 
+CFLAGS 	+= -I . -I include  -I src -I src/egn/ -I third/ -I third/opus-1.3.1/include -I third/libogg-1.3.3/include
+
+ifeq ($(USE_SSL), 1)
+    CFLAGS  += -D MG_ENABLE_SSL=1 -D USE_SSL=1
+endif
+
+ifeq ($(USE_SSL), 1)
+	LOCAL_MODULE = skegn-linux-ssl-$(MINGWABI)-$(VERSION)-$(TIMESTAMP)
+else
+	LOCAL_MODULE = skegn-linux-$(MINGWABI)-$(VERSION)-$(TIMESTAMP)
+endif
+SHARED_TARGET = lib$(LOCAL_MODULE).so
+STATIC_TARGET = lib$(LOCAL_MODULE).a
+
+LOCAL_OBJ_FILES := 	src/sdk/skegn.o \
+                    src/sdk/skegn_jni.o \
+					src/egn/sgn_engine.o \
+					src/egn/sgn_event.o \
+					src/egn/lib/sgn_buf.o \
+					src/egn/lib/sgn_msg_queue.o \
+					src/egn/lib/sgn_secureconf.o \
+					src/egn/lib/sgn_uuid.o \
+					src/egn/lib/sgn_dbg.o \
+					src/egn/lib/sgn_sha1.o \
+					src/egn/lib/sgn_hmac.o \
+					src/egn/lib/sgn_sound_intensity.o \
+					src/egn/cloud/sgn_opus_enc.o \
+					src/egn/platform/sgn_common.o \
+					src/egn/platform/sgn_win32.o \
+					src/egn/platform/sgn_win32_getmac.o \
+					src/egn/platform/sgn_linux.o \
+					third/mongoose/mongoose.o \
+				   	third/cJSON/cJSON.o \
+				   	third/xxtea/sgn_secure_code.o \
+                    third/libogg-1.3.3/src/bitwise.o \
+                    third/libogg-1.3.3/src/framing.o
+
+LDFLAGS += third/opus_libs/linux/libopus_linux64.a
+ifeq ($(USE_SSL), 1)
+	LDFLAGS += third/openssl/libs/linux/libssl.so
+	LDFLAGS += third/openssl/libs/linux/libcrypto.so
+endif
+LDFLAGS += -pthread -fPIE -fPIC  -lz
+
+$(SHARED_TARGET):$(LOCAL_OBJ_FILES)
+	$(CXX) $^ $(LDFLAGS) -shared -o $@
+	$(STRIP) --strip-unneeded $@
+
+$(STATIC_TARGET):$(LOCAL_OBJ_FILES)
+	$(AR) crv -o $@ $^
+	$(STRIP) --strip-unneeded $@
+
+all:$(LOCAL_OBJ_FILES) $(SHARED_TARGET)
+
+clean:
+	rm -rf $(SHARED_TARGET) $(LOCAL_OBJ_FILES)

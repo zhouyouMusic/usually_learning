@@ -1,0 +1,5 @@
+SOURCE:
+http://www.cpan.org/modules/by-module/Crypt/Crypt-XXTEA-CImpl-0.02.tar.gz
+
+2014.12.11:针对算法的特征常数进行隐藏优化。
+2014.12.29:修改函数名和文件名,防破解

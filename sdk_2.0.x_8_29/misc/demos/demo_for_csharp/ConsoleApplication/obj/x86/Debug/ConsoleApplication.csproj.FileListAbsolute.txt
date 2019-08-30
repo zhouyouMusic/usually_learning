@@ -1,0 +1,5 @@
+E:\support_workspace\发给客测试\巧克英语\2017-08-31\参考代码\C#demo\demo_for_csharp\ConsoleApplication\bin\Debug\ConsoleApplication.exe
+E:\support_workspace\发给客测试\巧克英语\2017-08-31\参考代码\C#demo\demo_for_csharp\ConsoleApplication\bin\Debug\ConsoleApplication.pdb
+E:\support_workspace\发给客测试\巧克英语\2017-08-31\参考代码\C#demo\demo_for_csharp\ConsoleApplication\obj\x86\Debug\ConsoleApplication.csprojResolveAssemblyReference.cache
+E:\support_workspace\发给客测试\巧克英语\2017-08-31\参考代码\C#demo\demo_for_csharp\ConsoleApplication\obj\x86\Debug\ConsoleApplication.exe
+E:\support_workspace\发给客测试\巧克英语\2017-08-31\参考代码\C#demo\demo_for_csharp\ConsoleApplication\obj\x86\Debug\ConsoleApplication.pdb

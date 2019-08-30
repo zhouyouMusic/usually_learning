@@ -1,0 +1,4 @@
+{
+    "appKey": "149500538200000d",
+    "nativeInvokeCoreTypes": ["word.eval","sent.eval","para.eval","align.eval","choice.rec"],
+}

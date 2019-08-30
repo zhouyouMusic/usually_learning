@@ -1,0 +1,114 @@
+ifeq ($(MINGWABI), x86_64)
+    CC 	= /mingw64/bin/gcc
+    CXX = /mingw64/bin/g++
+    STRIP = /mingw64/bin/strip
+else
+    MINGWABI = i686
+    CC  = /mingw32/bin/gcc
+    CXX = /mingw32/bin/g++
+    STRIP = /mingw32/bin/strip
+endif
+ifeq ($(USE_SSL), 1)
+CFLAGS  += -D MG_ENABLE_SSL=1
+endif
+CFLAGS  += -D CJSON_HIDE_SYMBOLS -D SKEGN_IMPLEMENTION -D _POSIX_C_SOURCE=200112L -D _BSD_SOURCE -D MG_WEBSOCKET_PING_INTERVAL_SECONDS=3 -std=c99 -O2 -fPIC
+CFLAGS 	+= -I . -I include  -I src -I src/egn/ -I third/ -I third/opus-1.3.1/include -I third/libogg-1.3.3/include -g -I third/openssl/include
+
+ifeq ($(USE_NATIVE), 1)
+    LOCAL_MODULE = skegn-mingw-$(MINGWABI)-native-$(VERSION)-$(TIMESTAMP)
+else
+    LOCAL_MODULE = skegn-mingw-$(MINGWABI)-cloud-$(VERSION)-$(TIMESTAMP)
+endif
+#LOCAL_MODULE = skegn
+SHARED_TARGET = $(LOCAL_MODULE).dll
+STATIC_TARGET = lib$(LOCAL_MODULE).a
+LOCAL_DLLNAME = skegn.dll
+
+LOCAL_OBJ_FILES := 	src/sdk/skegn.o \
+                    src/sdk/skegn_jni.o \
+					src/egn/sgn_engine.o \
+					src/egn/sgn_event.o \
+					src/egn/lib/sgn_buf.o \
+					src/egn/lib/sgn_msg_queue.o \
+					src/egn/lib/sgn_secureconf.o \
+					src/egn/lib/sgn_uuid.o \
+					src/egn/lib/sgn_dbg.o \
+                    src/egn/lib/sgn_file.o \
+                    src/egn/lib/sgn_sha1.o \
+                    src/egn/lib/sgn_hmac.o \
+                    src/egn/lib/sgn_sound_intensity.o \
+					src/egn/cloud/sgn_opus_enc.o \
+					src/egn/platform/sgn_common.o \
+					src/egn/platform/sgn_win32.o \
+					src/egn/platform/sgn_win32_getmac.o \
+					third/mongoose/mongoose.o \
+				   	third/cJSON/cJSON.o \
+				   	third/xxtea/sgn_secure_code.o \
+				   	third/libogg-1.3.3/src/bitwise.o \
+				   	third/libogg-1.3.3/src/framing.o
+LDFLAGS += -shared -static-libgcc -Wl,-Bstatic -lpthread -lws2_32 -fPIE -lz third/openssl/libs/windows/libssl.dll.a third/openssl/libs/windows/libcrypto.dll.a
+ifeq ($(USE_NATIVE), 1)
+CFLAGS          += -D USE_NATIVE -D USE_NATIVE_EVAL -D USE_NATIVE_ALI -D USE_NATIVE_REC -D USE_NATIVE_VAD
+LOCAL_OBJ_FILES += src/egn/lib/sgn_instance.o \
+                   src/egn/lib/sgn_file.o \
+                   src/egn/native/sgn_native_ali_module.o \
+                   src/egn/native/sgn_native_eval_module.o \
+                   src/egn/native/sgn_native_open_module.o \
+                   src/egn/native/sgn_native_rec_module.o \
+                   src/egn/native/sgn_native_vad_module.o \
+                   src/egn/native/sgn_native.o \
+                   src/egn/native/sgn_native_event.o \
+                   src/egn/native/sgn_auth.o 
+    ifeq ($(MINGWABI), i686)
+        LDFLAGS += -frtti -fPIE -pie -shared -Wl,-whole-archive
+        LDFLAGS += third/opus_libs/windows/libopus_mingw32.a
+    	ifeq ($(USE_SSL), 1)
+    		LDFLAGS += third/openssl_libs/mingw/i686/libcrypto.dll.a
+    		LDFLAGS += third/openssl_libs/mingw/i686/libssl.dll.a
+    	endif
+        LDFLAGS += $(shell find ./third/native_corelib/mingw/corelib -name \*.a)
+        LDFLAGS += -Wl,-no-whole-archive -Wl,--gc-sections
+        LDFLAGS += -L/d/BinaryInstall/msys64/lib32 -ldl -lmman -lpsapi -L ./third/native_corelib/mingw/third_party -lopenblas -liconv -lz
+    else
+        LDFLAGS += -frtti -fPIE -pie -shared -Wl,-whole-archive
+        LDFLAGS += third/opus_libs/windows/libopus_mingw64.a
+    	ifeq ($(USE_SSL), 1)
+    		LDFLAGS += third/openssl_libs/mingw/x86_64/libcrypto.dll.a
+    		LDFLAGS += third/openssl_libs/mingw/x86_64/libssl.dll.a
+    	endif
+        LDFLAGS += $(shell find ./third/native_corelib/mingw/corelib64 -name \*.a)
+        LDFLAGS += -Wl,-no-whole-archive -Wl,--gc-sections
+        LDFLAGS += -L/d/BinaryInstall/msys64/lib -ldl -lmman -lpsapi -L ./third/native_corelib/mingw/third_party64 -lopenblas -liconv -lz
+    endif
+else
+    ifeq ($(MINGWABI), i686)
+        LDFLAGS += third/opus_libs/windows/libopus_mingw32.a
+    	ifeq ($(USE_SSL), 1)
+    		LDFLAGS += third/openssl_libs/mingw/i686/libcrypto.dll.a
+    		LDFLAGS += third/openssl_libs/mingw/i686/libssl.dll.a
+    	endif
+    else
+		LDFLAGS += third/opus_libs/windows/libopus_mingw64.a
+    	ifeq ($(USE_SSL), 1)
+    		LDFLAGS += third/openssl_libs/mingw/x86_64/libcrypto.dll.a
+    		LDFLAGS += third/openssl_libs/mingw/x86_64/libssl.dll.a
+    	endif
+    endif
+    
+endif
+
+$(SHARED_TARGET):$(LOCAL_OBJ_FILES)
+	$(CXX) $^ $(LDFLAGS) -Wl,--kill-at -Wl,--output-def,$(LOCAL_MODULE).def -o $@
+	sed -i 's/[^ \t]* = //g' $(LOCAL_MODULE).def
+	if [[ $(MINGWABI) == "x86_64" ]]; then lib /machine:x64 /def:$(LOCAL_MODULE).def /name:$(LOCAL_DLLNAME) /out:$(LOCAL_MODULE).lib; fi
+#	if [[ $(MINGWABI) == "i686" ]]; then lib /machine:x86 /def:$(LOCAL_MODULE).def /name:$(LOCAL_DLLNAME) /out:$(LOCAL_MODULE).lib; fi
+
+
+$(STATIC_TARGET):$(LOCAL_OBJ_FILES)
+	$(AR) crv -o $@ $^
+
+
+all:$(LOCAL_OBJ_FILES) $(SHARED_TARGET)
+
+clean:
+	rm -rf $(SHARED_TARGET) $(LOCAL_OBJ_FILES)

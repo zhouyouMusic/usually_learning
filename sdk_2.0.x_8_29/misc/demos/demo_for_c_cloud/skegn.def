@@ -1,0 +1,10 @@
+EXPORTS
+    JNI_OnLoad @1
+    skegn_cancel @2
+    skegn_delete @3
+    skegn_feed @4
+    skegn_get_device_id @5
+    skegn_new @6
+    skegn_opt @7
+    skegn_start @8
+    skegn_stop @9

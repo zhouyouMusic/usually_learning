@@ -1,0 +1,1 @@
+cd third/opus-1.2.1 && ./configure --with-pic --disable-extra-programs --disable-doc && make all

@@ -1,0 +1,62 @@
+/usr/local/android-ndk-r16b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -MMD -MP -MF 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/libogg-1.3.3/src/bitwise.o.d 
+-gcc-toolchain /usr/local/android-ndk-r16b/toolchains/x86_64-4.9/prebuilt/linux-x86_64 
+-target x86_64-none-linux-android -ffunction-sections -funwind-tables -fstack-protector-strong 
+-fPIC -Wno-invalid-command-line-argument 
+-Wno-unused-command-line-argument 
+-no-canonical-prefixes  
+-g -O2 -DNDEBUG  
+-I/opt/svrroot/sdk_2.0.x/jni/../include 
+-I/opt/svrroot/sdk_2.0.x/jni/../src 
+-I/opt/svrroot/sdk_2.0.x/jni/../src/egn 
+-I/opt/svrroot/sdk_2.0.x/jni/../third 
+-I/opt/svrroot/sdk_2.0.x/jni/../third/libopus-sdk-release/include 
+-I/opt/svrroot/sdk_2.0.x/jni/../third/libogg-1.3.3/include 
+-I/usr/local/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/include 
+-I/usr/local/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86_64/include 
+-I/usr/local/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward 
+-I/opt/svrroot/sdk_2.0.x/jni/..   
+-DANDROID -D MG_WEBSOCKET_PING_INTERVAL_SECONDS=3 
+-D__ANDROID_API__=21 -Wa,--noexecstack -Wformat 
+-Werror=format-security  
+--sysroot /usr/local/android-ndk-r16b/sysroot 
+-isystem /usr/local/android-ndk-r16b/sysroot/usr/include/x86_64-linux-android -c  
+/opt/svrroot/sdk_2.0.x/jni/../third/libogg-1.3.3/src/bitwise.c 
+-o /opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/libogg-1.3.3/src/bitwise.o
+
+
+
+
+
+/usr/local/android-ndk-r16b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ 
+-Wl,-soname,libskegn.so -shared 
+--sysroot=/usr/local/android-ndk-r16b/platforms/android-21/arch-x86_64 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/sdk/skegn.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/sdk/skegn_jni.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/sgn_engine.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/sgn_event.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/lib/sgn_buf.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/lib/sgn_msg_queue.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/lib/sgn_secureconf.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/lib/sgn_uuid.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/cloud/sgn_opus_enc.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/os/sgn_common.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/src/egn/os/sgn_android.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/mongoose/mongoose.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/cJSON/cJSON.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/sha1/sha1.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/xxtea/sgn_secure_code.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/libogg-1.3.3/src/bitwise.o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/objs/skegn/third/libogg-1.3.3/src/framing.o 
+/opt/svrroot/sdk_2.0.x/jni/../third/libopus-sdk-release/obj/local/x86_64/libopus.a 
+-latomic -Wl,--exclude-libs,libatomic.a  
+-gcc-toolchain /usr/local/android-ndk-r16b/toolchains/x86_64-4.9/prebuilt/linux-x86_64 
+-target x86_64-none-linux-android 
+-no-canonical-prefixes   
+-Wl,--build-id -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now 
+-Wl,--warn-shared-textrel -Wl,--fatal-warnings  
+-L/usr/local/android-ndk-r16b/platforms/android-21/arch-x86_64/usr/lib64 
+-L/usr/local/android-ndk-r16b/platforms/android-21/arch-x86_64/usr/lib 
+-lz -pthread 
+/usr/local/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86_64/libsupc++.a -lc -lm -o 
+/opt/svrroot/sdk_2.0.x/obj/local/x86_64/libskegn.so
